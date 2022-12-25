@@ -4,3 +4,6 @@
 
 # ycv
 Build CV and job application materials using yaml files
+
+# Example PDFs
+[Here](https://github.com/md-arif-shaikh/ycv/tree/pdflatex/examples/fancyJob) you can find the pdfs built using `yaml` and `bib` files in the `example` directory.
