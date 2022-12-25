@@ -24,9 +24,85 @@ class yamlToTeX:
         self.authinfo_file = authinfo_file
         self.style_file = style_file
         self.job = job
+        if not os.path.exists(self.authinfo_file):
+            print("Can not find `authinfo.yaml` file in the current directory.\n"
+                  "This file is required to create appropriate headers.\n")
+            create_now = input("Enter `y` to create an `authinfo.yaml` file now?: ")
+            if create_now:
+                self.create_authinfo_file()
         self.authinfo = self.get_data_from_yaml_file(self.authinfo_file)
+        if not os.path.exists(self.style_file):
+            print("Can not find `style.yaml` file in the current directory.\n"
+                  "This file is required to apply styles in the TeX files.\n")
+            create_now = input("Enter `y` to create a `style.yaml` file now?: ")
+            if create_now:
+                self.create_style_file()
         self.style = self.get_data_from_yaml_file(self.style_file)
         self.header_style = self.style["header"]
+
+    def create_authinfo_file(self):
+        entries = ["Name",
+                   "Email",
+                   "Website",
+                   "Position",
+                   "Department",
+                   "Department website",
+                   "Institute",
+                   "Institute Website",
+                   "Institute Address"]
+        authinfo_file = open(self.authinfo_file, "w")
+        for entry in entries:      
+            val = input(f"{entry}: ")
+            ent = entry.lower().replace(" ", "-")
+            authinfo_file.write(f"{ent}: {val}\n")
+        bib_name = input("Abbreviated name to be used in list of Publications. Example A. Einstein for Albert Einstein: ")
+        authinfo_file.write(f"bib-name: {bib_name}")
+        authinfo_file.close()
+        print("Created `authinfo.yaml` file.")
+
+    def create_style_file(self):
+        styles = ""
+        # header
+        styles +="header:\n"
+        styles +="  align: left\n"
+        styles +="  top-rule: n\n"
+        styles +="  bottom-rule: y\n"
+        styles +="  top-rule-thickness: 1\n"
+        styles +="  bottom-rule-thickness: 1\n"
+        styles +="  title-fontsize: Large\n"
+        styles +="research_plan:\n"
+        styles +="  title: Research Plan\n"
+        styles +="  section: subsection\n"
+        styles +="  section-color:\n"
+        styles +="  section-font:\n"
+        styles +="  section-fontsize:\n"
+        styles +="  numbered-section: n\n"
+        styles +="cv:\n"
+        styles +=f"  title: {self.authinfo['name']}\n"
+        styles +="  section: section\n"
+        styles +="  section-color:\n"
+        styles +="  section-font:\n"
+        styles +="  section-fontsize:\n"
+        styles +="  numbered-section: n\n"
+        styles +="publications:\n"
+        styles +="  title: List of Publications\n"
+        styles +="  section: section\n"
+        styles +="  section-color:\n"
+        styles +="  section-font:\n"
+        styles +="  section-fontsize:\n"
+        styles +="  numbered-section: n\n"
+        styles +="tex:\n"
+        styles +="  preamble:\n"
+        styles +="  linkcolor:\n"
+        styles +="  citecolor:\n"
+        styles +="  filecolor:\n"
+        styles +="  urlcolor:\n"
+        styles +="  margin: 1in\n"
+        styles +="  compiler:\n"
+        style_file = open(self.style_file, "w")
+        style_file.write(styles)
+        style_file.close()
+        print("Create `style.yaml`")
 
     def get_data_from_yaml_file(self, yaml_file):
         fl = open(yaml_file, "r")
