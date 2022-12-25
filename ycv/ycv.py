@@ -3,39 +3,47 @@ import os
 import argparse
 from .yamlToTex import cleanup_tex, yamlToTeX
 
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "-j",
-    type=str,
-    required=True,
-    help="Job/position name. A directory with this name will be created to host tex and generated files.")
-parser.add_argument(
-    "-y",
-    nargs="+",
-    help="yaml files to use. Space separated with format" " <doc>:<yaml>.",
-    type=lambda kv: kv.split(":"),
-)
-parser.add_argument(
-    "-clean_tex",
-    action="store_true",
-    help="clean tex files",
-)
 
-args = parser.parse_args()
-args.y = dict(args.y)
-if not os.path.exists(args.j):
-    os.mkdir(args.j)
+def build_materials_cli():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-j",
+        type=str,
+        required=True,
+        help="Job/position name. A directory with this name will be created to host tex and generated files.")
+    parser.add_argument(
+        "-y",
+        nargs="+",
+        required=True,
+        help=("yaml files to use. Space separated with format" " <doc>:<yaml>.\n"
+              "Example: -y cv:/path/to/cv.yaml research_plan:/path/to/research_plan.yaml"),
+        type=lambda kv: kv.split(":"),
+    )
+    parser.add_argument(
+        "-clean_tex",
+        action="store_true",
+        help="clean tex files",
+    )
+    
+    args = parser.parse_args()
+    args.y = dict(args.y)
+    build_materials(args.j, args.y, args.clean_tex)
+    
 
-def build_materials():
+def build_materials(job_name, yaml_files_dict, clean_tex=False):
+    if not os.path.exists(job_name):
+        os.mkdir(job_name)
+
     yt = yamlToTeX(authinfo_file="authinfo.yaml",
                    style_file="style.yaml",
-                   job=args.j)
+                   job=job_name)
     doc_dict = {"cv": yt.create_cv,
                 "research_plan": yt.create_research_plan,
                 "publications": yt.create_list_of_publications}
-    for k in args.y:
+    for k in yaml_files_dict:
         if k not in doc_dict:
             raise Exception(f"Do not know how to create {k}")
-        doc_dict[k](args.y[k])
-    if args.clean_tex:
-        cleanup_tex(args.j)
+        doc_dict[k](yaml_files_dict[k])
+
+    if clean_tex:
+        cleanup_tex(job_name)

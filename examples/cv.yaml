@@ -1,0 +1,144 @@
+positions:
+  postdoc_snu:
+    position: Postdoctoral Fellow
+    department: Department of Physics and Astronomy
+    department-website: https://physics.snu.ac.kr/en
+    institute: Seoul National University
+    institute-website: https://en.snu.ac.kr
+    institute-address: 1 Gwanak-ro, Gwanak-gu, Seoul 08826, Korea
+    from-year: 2022
+    from-month: July
+    to-year:
+    to-month:
+    mentor: Hyung Mok Lee
+  postdoc_icts:
+    position: Postdoctoral Fellow
+    department: Astrophysical Relativity
+    department-website: 
+    institute: International Centre for Theoretical Sciences
+    institute-website: https://www.icts.res.in
+    institute-address: Hesaraghatta Hobli, Karnataka, 560089, India
+    from-year: 2019
+    from-month: July
+    to-year: 2022
+    to-month: June
+    mentor: Parameswaran Ajith, Prayush Kumar
+education:
+  PhD:
+    degree: Doctor of Philosophy (PhD)
+    department: Cosmology \& High Energy Astrophysics
+    department-website: 
+    institute: Harish-Chandra Research Institute
+    institute-website: https://www.hri.res.in
+    institute-address: Chhatnag Road, Jhunsi, Prayagraj, 211019, Uttar Pradesh, India 
+    from-year: 2014
+    from-month: July
+    to-year: 2019
+    to-month: June
+    advisor: Tapas Kumar Das
+    advisor-website:
+    advisor-email: tapas@hri.res.in
+  MSc:
+    degree: Master of Science (MSc)
+    department: Cosmology \& High Energy Astrophysics
+    department-website: 
+    institute: Harish-Chandra Research Institute
+    institute-website: https://www.hri.res.in
+    institute-address: Chhatnag Road, Jhunsi, Prayagraj, 211019, Uttar Pradesh, India 
+    from-year: 2012
+    from-month: July
+    to-year: 2014
+    to-month: June
+    advisor: Tapas Kumar Das
+    advisor-website:
+    advisor-email: tapas@hri.res.in
+  BSc:
+    degree: Bachelor of Science (BSc)
+    department: Faculty of Physics
+    department-website: 
+    institute: Jadavpur University
+    institute-website: http://www.jaduniv.edu.in/
+    institute-address: 188, Raja S.C. Mallick Rd, Kolkata 700032, India
+    from-year: 2009
+    from-month: July
+    to-year: 2012
+    to-month: June
+    advisor: 
+    advisor-website:
+    advisor-email: 
+
+publications:
+  directory: /home/arif/application-materials/
+  short-author:
+    title: Short author
+    reviewed: publications.bib
+  collaboration:
+    title: Collaboration
+    reviewed: lvk.bib
+
+presentations:
+  talks:
+    title: Conference Talks
+    file: /home/arif/application-materials/talks.yaml
+  seminars:
+    title: Seminars
+    file: /home/arif/application-materials/seminars.yaml
+
+references:
+  phd-advisor:
+    name: Tapas Kumar Das
+    position: Professor
+    website:
+    institute: Harish-Chandra Research Institute
+    institute-website:
+    institute-address: Chhatnag Road, Jhunsi, Prayagraj, 211019, Uttar Pradesh, India
+    email: tapas@hri.res.in
+    phone:
+    relation: Phd Advisor
+  Ajith:
+    name: Parameswaran Ajith
+    position: Professor
+    website:
+    institute: International Centre for Theoretical Sciences
+    institute-website:
+    institute-address: Hesaraghatta Hobli, Karnataka, 560089, India
+    email: ajith@icts.res.in
+    phone:
+    relation: Postdoc mentor
+  Prayush:
+    name: Prayush Kumar
+    website:
+    position: Reader
+    institute: International Centre for Theoretical Sciences
+    institute-website: "https://www.icts.res.in/"
+    institute-address: Hesaraghatta Hobli, Karnataka, 560089, India
+    email: prayush@icts.res.in
+    phone:
+    relation:
+  Shasvath:
+    name: Shasvath Kapadia
+    website:
+    position: Assistant Professor
+    institute: Inter-University Centre for Astronomy and Astrophysics
+    institute-website: "https://www.iucaa.in/"
+    institute-address: Post Bag 4, Ganeshkhind, Pune, Maharashtra 411007, India
+    email: shasvath.kapadia@iucaa.in
+    phone:
+    relation:
+  Vijay:
+    name: Vijay Varma
+    website:
+    position: Assistant Professor
+    institute: University of Massachusetts
+    institute-website:
+    institute-address: Dartmouth, USA
+    email:
+    phone:
+    relation:
+
+layout:
+  - positions
+  - education
+  - publications
+  - presentations
+  - references

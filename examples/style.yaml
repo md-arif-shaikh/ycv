@@ -1,0 +1,36 @@
+header:
+  align: left
+  top-rule: n
+  bottom-rule: y
+  top-rule-thickness: 1
+  bottom-rule-thickness: 1
+  title-fontsize: Large
+research_plan:
+  title: Research Plan
+  section: subsection
+  section-color:
+  section-font:
+  section-fontsize:
+  numbered-section: n
+cv:
+  title: Md Arif Shaikh
+  section: section
+  section-color:
+  section-font:
+  section-fontsize:
+  numbered-section: n
+publications:
+  title: List of Publications
+  section: section
+  section-color:
+  section-font:
+  section-fontsize:
+  numbered-section: n
+tex:
+  preamble:
+  linkcolor:
+  citecolor:
+  filecolor:
+  urlcolor:
+  margin: 1in
+  compiler:
