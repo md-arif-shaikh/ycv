@@ -1,0 +1,55 @@
+gwpaw-2022:
+  title: Defining eccentricity for gravitational wave astronomy
+  url: 
+  conference: GWPAW
+  conference-url: "https://www.gwpaw2022.org/"
+  city: Melbourne
+  country: Australia
+  from-date: 4
+  from-month: December
+  from-year: 2022
+  to-date: 9
+  to-month: December
+  to-year: 2022
+
+icts-inhouse-2020:
+  title: Probing the evolution history of compact binaries from higher modes of gravitation waves
+  url: "https://www.youtube.com/watch?v=UhRhe5N2wFY&feature=youtu.be"
+  conference: ICTS In-house symposium
+  conference-url: "https://www.icts.res.in/inhouse2020"
+  city: Bangalore
+  country: India
+  from-date: 17
+  from-month: February
+  from-year: 2020
+  to-date: 18
+  to-month: February
+  to-year: 2020
+
+EXPUNIV-2018:
+  title: Relativistic acoustic geometry in general relativistic accretion disc around Kerr black holes
+  url:
+  conference: "Exploring the Universe: Near Earth Space Science to Extra-Galactic Astronomy"
+  conference-url: "https://www.bose.res.in/Conferences/EXPUNIV2018/"
+  city: Kolkata
+  country: India
+  from-date: 14
+  from-month: November
+  from-year: 2018
+  to-date: 17
+  to-month: November
+  to-year: 2018
+
+yam-2017:
+  title: Emergence of curved sonic manifold for isothermal accretion in black hole metric
+  url:
+  conference: Young Astronomers Meet
+  conference-url: "https://www.iucaa.in/~yam2017/"
+  city: Pune
+  country: India
+  from-date: 11
+  from-month: September
+  from-year: 2017
+  to-date: 15
+  to-month: September
+  to-year: 2017

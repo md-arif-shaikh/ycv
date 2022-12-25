@@ -68,7 +68,7 @@ education:
     advisor-email: 
 
 publications:
-  directory: /home/arif/application-materials/
+  directory:
   short-author:
     title: Short author
     reviewed: publications.bib
@@ -79,10 +79,10 @@ publications:
 presentations:
   talks:
     title: Conference Talks
-    file: /home/arif/application-materials/talks.yaml
+    file: talks.yaml
   seminars:
     title: Seminars
-    file: /home/arif/application-materials/seminars.yaml
+    file: seminars.yaml
 
 references:
   phd-advisor:
