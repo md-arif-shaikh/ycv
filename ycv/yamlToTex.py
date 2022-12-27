@@ -383,8 +383,8 @@ class yamlToTeX:
         references_text = "\\begin{itemize}\n"
         for idx, k in enumerate(self.references):
             ref = self.references[k]
-            references_text += f"\\item {{\\bfseries {ref['name']}}}, "
-            references_text += (f"{{({ref['relation']})}}" if ref['relation'] is not None else "") + r"\\" + "\n"
+            references_text += f"\\item {{\\bfseries {ref['name']}}}"
+            references_text += (f", {{({ref['relation']})}}" if ref['relation'] is not None else "") + r"\\" + "\n"
             references_text += ref['position'] + ", "
             references_text += self.create_link(ref['institute-website'], ref['institute'], False) + r" \\" + "\n"
             references_text += ref['institute-address'] + r" \\" + "\n"
