@@ -125,12 +125,11 @@ class yamlToTeX:
                     f"citecolor={hyperref_colors['citecolor']},"
                     f"filecolor={hyperref_colors['filecolor']},"
                     f"urlcolor={hyperref_colors['filecolor']},pdfusetitle]{{hyperref}}\n")
-        # preamble +="\\usepackage{palatino}\n"
-        # preamble +="\\usepackage{fontspec}\n"
-        # preamble +="\\setmainfont{Avenir}\n"
         preamble += "\\usepackage{titlesec}\n"
         preamble += ("\\titleformat{\\section}\n"
                      "{\\normalfont\\Large\\bfseries}{\\thesection}{1em}{}[{\\titlerule[0.5pt]}]")
+        if "preamble" in self.style["tex"] and self.style["tex"]["preamble"] is not None:
+            preamble += self.style["tex"]["preamble"]
         return preamble
         
     def create_header(self, doc_type="cv"):
@@ -264,35 +263,35 @@ class yamlToTeX:
     def create_positions_for_cv(self):
         positions = self.cv["positions"]
         pos_text = "\\" + self.cv_section + self.cv_section_number + "{Positions}\n"
+        pos_text += "\\begin{itemize}\n"
         for idx, pos in enumerate(positions):
             p = positions[pos]
             if p['to-year'] is None:
                 p['to-year'] = r"{\itshape current}"
-            pos_text += fr"\noindent {{\bfseries {p['position']}}} \hfill {p['from-year']}--{p['to-year']}\\" + "\n"
+            pos_text += fr"\item {{\bfseries {p['position']}}} \hfill {p['from-year']}--{p['to-year']}\\" + "\n"
             pos_text += fr"\href{{{p['department-website']}}}{{{p['department']}}}, "
             pos_text += fr"\href{{{p['institute-website']}}}{{{p['institute']}}}\\" + "\n"
             pos_text += fr"{p['institute-address']}\\" + "\n"
             if p["mentor"] is not None:
                 pos_text += rf"{{\itshape Mentors}}: {p['mentor']}" + "\n\n"
-            if idx < len(positions) -1:
-                pos_text += r"\vspace{0.2cm}" + "\n\n"
+        pos_text += "\\end{itemize}\n"
         return pos_text
 
     def create_education_for_cv(self):
         education = self.cv["education"]
         edu_text = "\\" + self.cv_section + self.cv_section_number + "{Education}\n"
+        edu_text += "\\begin{itemize}\n"
         for idx, edu in enumerate(education):
             d = education[edu]
             if d['to-year'] is None:
                 d['to-year'] = r"{\itshape current}"
-            edu_text += fr"\noindent {{\bfseries {d['degree']}}} \hfill {d['from-year']}--{d['to-year']}\\" + "\n"
+            edu_text += fr"\item {{\bfseries {d['degree']}}} \hfill {d['from-year']}--{d['to-year']}\\" + "\n"
             edu_text += fr"\href{{{d['department-website']}}}{{{d['department']}}}, "
             edu_text += fr"\href{{{d['institute-website']}}}{{{d['institute']}}}\\" + "\n"
             edu_text += fr"{d['institute-address']}\\" + "\n"
             if d["advisor"] is not None:
                 edu_text += rf"{{\itshape Advisor}}: {d['advisor']}" + "\n\n"
-            if idx < len(education) -1:
-                edu_text += r"\vspace{0.2cm}" + "\n\n"
+        edu_text += "\\end{itemize}\n"
         return edu_text
 
     def create_list_of_publications_for_cv(self):
@@ -368,7 +367,7 @@ class yamlToTeX:
                 p += "\href{" + "https://doi.org/" + d["doi"] + "}{" + d["journal"] + "}" + ", "
                 p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
             p += "(" + d["year"] + "), "
-            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + ", "
+            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + "\n"
         p += "\\end{enumerate}\n"
         return p
 
@@ -380,18 +379,20 @@ class yamlToTeX:
     def create_list_of_references_body(self, references_file):
         self.references_file = references_file
         self.references = self.get_data_from_yaml_file(self.references_file)["references"]
-        references_text = ""
+        references_text = "\\begin{itemize}\n"
         for idx, k in enumerate(self.references):
             ref = self.references[k]
-            references_text += f"\\noindent {{\\bfseries {ref['name']}}}, "
+            references_text += f"\\item {{\\bfseries {ref['name']}}}, "
             references_text += (f"{{({ref['relation']})}}" if ref['relation'] is not None else "") + r"\\" + "\n"
             references_text += ref['position'] + ", "
             references_text += rf"\href{{{ref['institute-website']}}}{{{ref['institute']}}}" + r" \\" + "\n"
             references_text += ref['institute-address'] + r" \\" + "\n"
-            references_text += rf"Email: \href{{mailto:{ref['email']}}}{{{ref['email']}}}" + r" \\" + "\n"
-            references_text += rf"Phone: {ref['phone']}" + "\n\n"
-            if idx < len(self.references) -1:
-                references_text += r"\vspace{0.2cm}" + "\n\n"
+            references_text += rf"Email: \href{{mailto:{ref['email']}}}{{{ref['email']}}}"
+            if "phone" in ref and ref["phone"] is not None:
+                references_text += rf", Phone: {ref['phone']}" + "\n\n"
+            else:
+                references_text += "\n\n"
+        references_text += "\\end{itemize}\n"
         return references_text
 
     def create_presentations_for_cv(self):
@@ -426,13 +427,14 @@ class yamlToTeX:
                 date = f"{t['from-month']} {t['from-date']} -- {t['to-date']}, {t['from-year']}" + "\n"
             else:
                 date = f"{t['from-month']} {t['from-date']} -- {t['from-month']} {t['to-date']}, {t['from-year']}" + "\n"
-            tex += r"\item " + f"``{t['title']}\"" + f"\\hfill {t['from-year']}" + r"\\" + "\n"
+            tex += r"\item "
+            if "title" in t:
+                tex += f"``{t['title']}\", "
             if "conference" in t:
-                tex += f"\\href{{{t['conference-url']}}}{{{t['conference']}}}, {t['city']}, {t['country']}, " + "\n"
-            elif "date" in t:
-                tex += f"\\href{{{t['institute-url']}}}{{{t['institute']}}}, {t['city']}, {t['country']}, " + "\n"
-            else:
-                raise Exception("Either date/conference should be in yaml data.")
+                tex += f"\\href{{{t['conference-url']}}}{{{t['conference']}}}, "
+            if "institute" in t:
+                tex += f"\\href{{{t['institute-url']}}}{{{t['institute']}}}, "
+            tex += f"{t['city']}, {t['country']}, " + "\n"
             tex += date
         tex += "\\end{enumerate}\n"
         return tex
