@@ -257,7 +257,8 @@ class yamlToTeX:
                                       "education": self.create_education_for_cv,
                                       "publications": self.create_list_of_publications_for_cv,
                                       "presentations": self.create_presentations_for_cv,
-                                      "references": self.create_list_of_references_for_cv}
+                                      "references": self.create_list_of_references_for_cv,
+                                      "achievements": self.create_achievements_for_cv}
         return cv_section_generators_dict[sec]
 
     def create_positions_for_cv(self):
@@ -269,8 +270,8 @@ class yamlToTeX:
             if p['to-year'] is None:
                 p['to-year'] = r"{\itshape current}"
             pos_text += fr"\item {{\bfseries {p['position']}}} \hfill {p['from-year']}--{p['to-year']}\\" + "\n"
-            pos_text += fr"\href{{{p['department-website']}}}{{{p['department']}}}, "
-            pos_text += fr"\href{{{p['institute-website']}}}{{{p['institute']}}}\\" + "\n"
+            pos_text += self.create_link(p['department-website'], p['department'])
+            pos_text += self.create_link(p['institute-website'], p['institute'], False) + r"\\" + "\n"
             pos_text += fr"{p['institute-address']}\\" + "\n"
             if p["mentor"] is not None:
                 pos_text += rf"{{\itshape Mentors}}: {p['mentor']}" + "\n\n"
@@ -286,8 +287,8 @@ class yamlToTeX:
             if d['to-year'] is None:
                 d['to-year'] = r"{\itshape current}"
             edu_text += fr"\item {{\bfseries {d['degree']}}} \hfill {d['from-year']}--{d['to-year']}\\" + "\n"
-            edu_text += fr"\href{{{d['department-website']}}}{{{d['department']}}}, "
-            edu_text += fr"\href{{{d['institute-website']}}}{{{d['institute']}}}\\" + "\n"
+            edu_text += self.create_link(d['department-website'], d['department'])
+            edu_text += self.create_link(d['institute-website'], d['institute'], False) + r"\\" + "\n"
             edu_text += fr"{d['institute-address']}\\" + "\n"
             if d["advisor"] is not None:
                 edu_text += rf"{{\itshape Advisor}}: {d['advisor']}" + "\n\n"
@@ -385,7 +386,7 @@ class yamlToTeX:
             references_text += f"\\item {{\\bfseries {ref['name']}}}, "
             references_text += (f"{{({ref['relation']})}}" if ref['relation'] is not None else "") + r"\\" + "\n"
             references_text += ref['position'] + ", "
-            references_text += rf"\href{{{ref['institute-website']}}}{{{ref['institute']}}}" + r" \\" + "\n"
+            references_text += self.create_link(ref['institute-website'], ref['institute'], False) + r" \\" + "\n"
             references_text += ref['institute-address'] + r" \\" + "\n"
             references_text += rf"Email: \href{{mailto:{ref['email']}}}{{{ref['email']}}}"
             if "phone" in ref and ref["phone"] is not None:
@@ -431,13 +432,27 @@ class yamlToTeX:
             if "title" in t:
                 tex += f"``{t['title']}\", "
             if "conference" in t:
-                tex += f"\\href{{{t['conference-url']}}}{{{t['conference']}}}, "
+                tex += self.create_link(t['conference-url'], t['conference'])
             if "institute" in t:
-                tex += f"\\href{{{t['institute-url']}}}{{{t['institute']}}}, "
+                tex += self.create_link(t['institute-url'], t['institute'])
             tex += f"{t['city']}, {t['country']}, " + "\n"
             tex += date
         tex += "\\end{enumerate}\n"
         return tex
+
+    def create_achievements_for_cv(self):
+        ach = self.get_data_from_yaml_file(self.cv["achievements"]["file"])
+        tex = "\\" + self.cv_section + self.cv_section_number + f"{{{self.cv['achievements']['title']}}}" + "\n"
+        tex += "\\begin{itemize}\n"
+        for achievement in ach:
+            a = ach[achievement]
+            org = self.create_link(a['organization-website'], a['organization'], False)
+            tex += f"\\item {a['description']}, {org}, {a['year']}\n"
+        tex += "\\end{itemize}\n"
+        return tex
+
+    def create_link(self, link, description, add_comma_space=True):
+        return f"\\href{{{link}}}{{{description}}}" + (", " if add_comma_space else "")
 
 
 def cleanup_tex(dir="./"):
