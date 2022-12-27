@@ -258,7 +258,8 @@ class yamlToTeX:
                                       "publications": self.create_list_of_publications_for_cv,
                                       "presentations": self.create_presentations_for_cv,
                                       "references": self.create_list_of_references_for_cv,
-                                      "achievements": self.create_achievements_for_cv}
+                                      "achievements": self.create_achievements_for_cv,
+                                      "visits": self.create_visits_for_cv}
         return cv_section_generators_dict[sec]
 
     def create_positions_for_cv(self):
@@ -448,6 +449,24 @@ class yamlToTeX:
             a = ach[achievement]
             org = self.create_link(a['organization-website'], a['organization'], False)
             tex += f"\\item {a['description']}, {org}, {a['year']}\n"
+        tex += "\\end{itemize}\n"
+        return tex
+
+    def create_visits_for_cv(self):
+        vis = self.get_data_from_yaml_file(self.cv["visits"]["file"])
+        tex = "\\" + self.cv_section + self.cv_section_number + f"{{{self.cv['visits']['title']}}}" + "\n"
+        tex += "\\begin{itemize}\n"
+        for visit in vis:
+            v = vis[visit]
+            host = self.create_link(v['host-url'], v['host'], False)
+            ins = self.create_link(v['institute-url'], v['institute'], False)
+            if v["from-date"] == v["to-date"]:
+                date = f"{v['from-month']} {v['from-date']}, {v['from-year']}"
+            elif v['from-month'] == v['to-month']:
+                date = f"{v['from-month']} {v['from-date']} -- {v['to-date']}, {v['from-year']}"
+            else:
+                date = f"{v['from-month']} {v['from-date']} -- {v['from-month']} {v['to-date']}, {v['from-year']}"
+            tex += f"\\item {host}, {ins}, {v['city']}, {v['country']}, {date}\n"
         tex += "\\end{itemize}\n"
         return tex
 
