@@ -27,7 +27,8 @@ publications:
   section-fontsize:
   numbered-section: n
 tex:
-  preamble:
+  preamble: |
+    \usepackage{palatino}
   linkcolor:
   citecolor:
   filecolor:
