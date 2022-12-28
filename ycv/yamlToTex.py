@@ -259,7 +259,8 @@ class yamlToTeX:
                                       "presentations": self.create_presentations_for_cv,
                                       "references": self.create_list_of_references_for_cv,
                                       "achievements": self.create_achievements_for_cv,
-                                      "visits": self.create_visits_for_cv}
+                                      "visits": self.create_visits_for_cv,
+                                      "teaching": self.create_teaching_for_cv}
         return cv_section_generators_dict[sec]
 
     def create_positions_for_cv(self):
@@ -469,6 +470,49 @@ class yamlToTeX:
             tex += f"\\item {host}, {ins}, {v['city']}, {v['country']}, {date}\n"
         tex += "\\end{itemize}\n"
         return tex
+
+    def create_teaching_for_cv(self):
+        teachings = self.get_data_from_yaml_file(self.cv["teaching"]["file"])
+        tex = "\\" + self.cv_section + self.cv_section_number + f"{{{self.cv['teaching']['title']}}}" + "\n"
+        tex += "\\begin{enumerate}\n"
+        for teaching in teachings:
+            t = teachings[teaching]
+            tex += "\\item "
+            if t['role'] == "Tutor":
+                tex += "{\\itshape Tutored} "
+            tex += f"``{t['course']}\", "
+            if "school" in t:
+                tex += self.create_link(t['school-website'], t['school'])
+            tex += self.create_link(t['institute-website'], t['institute']) + t['city'] + ", " + t['country'] + ", " + self.get_duration(t['from'], t['to'])
+            if t['role'] == "Tutor":
+                tex += r"\\"
+                i = t["instructor"]
+                name = self.create_link(i['website'], i['name'], False)
+                inst = self.create_link(i['institute-website'], i['institute'], False)
+                tex += f"{{\\itshape Instructor: }} {name}, {inst}, {i['city']}, {i['country']}" + "\n"
+            else:
+                tex += "\n"
+        tex += "\\end{enumerate}"
+        return tex
+                
+    def get_duration(self, from_date, to_date):
+        from_d = datetime.date.fromisoformat(f"{from_date}")
+        from_day = from_d.strftime("%d")
+        from_month = from_d.strftime("%B")
+        from_year = from_d.strftime("%Y")
+
+        to_d = datetime.date.fromisoformat(f"{to_date}")
+        to_day = to_d.strftime("%d")
+        to_month = to_d.strftime("%B")
+        to_year = to_d.strftime("%Y")
+
+        if from_date == to_date:
+            date = f"{from_month} {from_day}, {from_year}"
+        elif from_month == to_month:
+            date = f"{from_month} {from_day} -- {to_day}, {from_year}"
+        else:
+            date = f"{from_month} {from_day} -- {to_month} {to_day}, {from_year}"
+        return date
 
     def create_link(self, link, description, add_comma_space=True):
         return f"\\href{{{link}}}{{{description}}}" + (", " if add_comma_space else "")
