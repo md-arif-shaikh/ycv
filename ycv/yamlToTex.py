@@ -466,7 +466,7 @@ class yamlToTeX:
             elif v['from-month'] == v['to-month']:
                 date = f"{v['from-month']} {v['from-date']} -- {v['to-date']}, {v['from-year']}"
             else:
-                date = f"{v['from-month']} {v['from-date']} -- {v['from-month']} {v['to-date']}, {v['from-year']}"
+                date = f"{v['from-month']} {v['from-date']} -- {v['to-month']} {v['to-date']}, {v['from-year']}"
             tex += f"\\item {host}, {ins}, {v['city']}, {v['country']}, {date}\n"
         tex += "\\end{itemize}\n"
         return tex
