@@ -260,7 +260,8 @@ class yamlToTeX:
                                       "references": self.create_list_of_references_for_cv,
                                       "achievements": self.create_achievements_for_cv,
                                       "visits": self.create_visits_for_cv,
-                                      "teaching": self.create_teaching_for_cv}
+                                      "teaching": self.create_teaching_for_cv,
+                                      "refereeing": self.create_refereeing_for_cv}
         return cv_section_generators_dict[sec]
 
     def create_positions_for_cv(self):
@@ -424,12 +425,7 @@ class yamlToTeX:
                     "to-month": month,
                     "to-year": year,
                     "from-year": year})
-            if t["from-date"] == t["to-date"]:
-               date = f"{t['from-month']} {t['from-date']}, {t['from-year']}" + "\n" 
-            elif t['from-month'] == t['to-month']:
-                date = f"{t['from-month']} {t['from-date']} -- {t['to-date']}, {t['from-year']}" + "\n"
-            else:
-                date = f"{t['from-month']} {t['from-date']} -- {t['from-month']} {t['to-date']}, {t['from-year']}" + "\n"
+            date = self.get_duration_from_dict(t)
             tex += r"\item "
             if "title" in t:
                 tex += f"``{t['title']}\", "
@@ -461,12 +457,7 @@ class yamlToTeX:
             v = vis[visit]
             host = self.create_link(v['host-url'], v['host'], False)
             ins = self.create_link(v['institute-url'], v['institute'], False)
-            if v["from-date"] == v["to-date"]:
-                date = f"{v['from-month']} {v['from-date']}, {v['from-year']}"
-            elif v['from-month'] == v['to-month']:
-                date = f"{v['from-month']} {v['from-date']} -- {v['to-date']}, {v['from-year']}"
-            else:
-                date = f"{v['from-month']} {v['from-date']} -- {v['to-month']} {v['to-date']}, {v['from-year']}"
+            date = self.get_duration_from_dict(v)
             tex += f"\\item {host}, {ins}, {v['city']}, {v['country']}, {date}\n"
         tex += "\\end{itemize}\n"
         return tex
@@ -478,7 +469,7 @@ class yamlToTeX:
         for teaching in teachings:
             t = teachings[teaching]
             tex += "\\item "
-            if t['role'] == "Tutor":
+            if t['role'] == "Tutor":    
                 tex += "{\\itshape Tutored} "
             tex += f"``{t['course']}\", "
             if "school" in t:
@@ -494,6 +485,25 @@ class yamlToTeX:
                 tex += "\n"
         tex += "\\end{enumerate}"
         return tex
+
+    def create_refereeing_for_cv(self):
+        refereeings = self.cv["refereeing"]
+        tex = "\\" + self.cv_section + self.cv_section_number + f"{{{self.cv['refereeing']['title']}}}" + "\n"
+        tex += "\\begin{enumerate}\n"
+        for refereeing in refereeings['contents']:
+            ref = refereeings['contents'][refereeing]
+            tex += r"\item " + self.create_link(ref['journal-website'], ref["journal"], False) + f" ({ref['number']})" + "\n"
+        tex += "\\end{enumerate}\n"
+        return tex
+
+    def get_duration_from_dict(self, date_dict):
+        if date_dict["from-date"] == date_dict["to-date"] and date_dict["from-month"] == date_dict["to-month"]:
+            date = f"{date_dict['from-month']} {date_dict['from-date']}, {date_dict['from-year']}"
+        elif date_dict["from-date"] != date_dict["to-date"] and date_dict["from-month"] == date_dict["to-month"]:
+            date = f"{date_dict['from-month']} {date_dict['from-date']}--{date_dict['to-date']}, {date_dict['from-year']}"
+        else:
+            date = f"{date_dict['from-month']} {date_dict['from-date']}--{date_dict['to-month']} {date_dict['to-date']}, {date_dict['from-year']}"
+        return date
                 
     def get_duration(self, from_date, to_date):
         from_d = datetime.date.fromisoformat(f"{from_date}")
@@ -509,9 +519,9 @@ class yamlToTeX:
         if from_date == to_date:
             date = f"{from_month} {from_day}, {from_year}"
         elif from_month == to_month:
-            date = f"{from_month} {from_day} -- {to_day}, {from_year}"
+            date = f"{from_month} {from_day}--{to_day}, {from_year}"
         else:
-            date = f"{from_month} {from_day} -- {to_month} {to_day}, {from_year}"
+            date = f"{from_month} {from_day}--{to_month} {to_day}, {from_year}"
         return date
 
     def create_link(self, link, description, add_comma_space=True):
