@@ -10,7 +10,10 @@ positions:
     from-month: July
     to-year:
     to-month:
-    mentor: Hyung Mok Lee
+    mentors:
+      hyungMok:
+        name: Hyung Mok Lee
+        website: http://astro.snu.ac.kr/~hmlee/
   postdoc_icts:
     position: Postdoctoral Fellow
     department: Astrophysical Relativity
@@ -22,7 +25,13 @@ positions:
     from-month: July
     to-year: 2022
     to-month: June
-    mentor: Parameswaran Ajith, Prayush Kumar
+    mentors:
+      Ajith:
+        name: Parameswaran Ajith
+        website: https://home.icts.res.in/~ajith/Home.html
+      Prayush:
+        name: Prayush Kumar (unofficial)
+        website: https://www.icts.res.in/people/prayush-kumar
 education:
   PhD:
     degree: Doctor of Philosophy (PhD)
