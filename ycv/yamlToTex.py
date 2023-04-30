@@ -325,8 +325,8 @@ class yamlToTeX:
 
     def create_list_of_publications(self, publication_file):
         """
-        Parameters:
-        -----------
+        Parameters
+        ----------
         publication_file:
             Path to publication file.
         """
