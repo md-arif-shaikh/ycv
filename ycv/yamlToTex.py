@@ -12,8 +12,8 @@ class yamlToTeX:
                  job=None):
         """Init with yaml files for author info and styles.
 
-        parameters:
-        -----------
+        Parameters
+        ----------
         authinfo_file:
             yaml file containg author information.
         style_file:
@@ -135,14 +135,14 @@ class yamlToTeX:
     def create_header(self, doc_type="cv"):
         """Create header for TeX.
 
-        parameters:
-        -----------
+        Parameters
+        ----------
         doc_type:
             Type of documents the header is intended for.
             Default is "cv"
 
-        returns:
-        --------
+        Returns
+        -------
             header string suitable to be used in TeX documents.
         """
         align_dict = {"left": "{flushleft}",
@@ -234,13 +234,13 @@ class yamlToTeX:
     def create_cv_body(self, cv_file):
         """Create CV body based on cv_file.
 
-        parameters:
-        -----------
+        Parameters
+        ----------
         cv_file:
             yaml file containing data to build cv.
 
-        returns:
-        --------
+        Returns
+        -------
             Text to be used in TeX file for CV.
         """
         self.cv_file = cv_file
