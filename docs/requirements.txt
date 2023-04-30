@@ -8,3 +8,4 @@ lalsuite==7.15
 h5py==3.8.0
 # furo==2023.3.27
 myst-parser==1.0.0
+bibtexparser==1.4.0
