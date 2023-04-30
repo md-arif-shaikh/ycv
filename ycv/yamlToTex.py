@@ -324,6 +324,12 @@ class yamlToTeX:
         return pub_text
 
     def create_list_of_publications(self, publication_file):
+        """
+        Parameters:
+        -----------
+        publication_file:
+            Path to publication file.
+        """
         # Write a TeX file
         self.pub = self.get_data_from_yaml_file(publication_file)
         extra_name = ("_" + self.job) if self.job is not None else ""
