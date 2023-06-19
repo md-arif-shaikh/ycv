@@ -112,19 +112,19 @@ class yamlToTeX:
 
     def create_tex_preamble(self):
         preamble = "\\documentclass[10pt]{article}\n"
-        preamble +="\\usepackage[margin=0.8in]{geometry}\n"
-        preamble +="\\usepackage[dvipsnames, usenames]{xcolor}\n"
-        preamble +="\\definecolor{linkcolor}{rgb}{0.0,0.3,0.5}\n"
+        preamble += "\\usepackage[margin=0.8in]{geometry}\n"
+        preamble += "\\usepackage[dvipsnames, usenames]{xcolor}\n"
+        preamble += "\\definecolor{linkcolor}{rgb}{0.0,0.3,0.5}\n"
         hyperref_colors = {}
         for c in ["linkcolor", "citecolor", "filecolor", "urlcolor"]:
             if self.style["tex"][c] is not None:
                 hyperref_colors[c] = self.style["tex"][c]
             else:
                 hyperref_colors[c] = "linkcolor"
-        preamble +=(f"\\usepackage[colorlinks=true, linkcolor={hyperref_colors['linkcolor']},"
-                    f"citecolor={hyperref_colors['citecolor']},"
-                    f"filecolor={hyperref_colors['filecolor']},"
-                    f"urlcolor={hyperref_colors['filecolor']},pdfusetitle]{{hyperref}}\n")
+        preamble += (f"\\usepackage[colorlinks=true, linkcolor={hyperref_colors['linkcolor']},"
+                     f"citecolor={hyperref_colors['citecolor']},"
+                     f"filecolor={hyperref_colors['filecolor']},"
+                     f"urlcolor={hyperref_colors['filecolor']},pdfusetitle]{{hyperref}}\n")
         preamble += "\\usepackage{titlesec}\n"
         preamble += ("\\titleformat{\\section}\n"
                      "{\\normalfont\\Large\\bfseries}{\\thesection}{1em}{}[{\\titlerule[0.5pt]}]")
@@ -449,7 +449,8 @@ class yamlToTeX:
             date = self.get_duration_from_dict(t)
             tex += r"\item "
             if "title" in t:
-                tex += f"``{t['title']}\", "
+                tit = t['title'].replace("_", "\\_")
+                tex += f"``{tit}\""
             if "conference" in t:
                 tex += self.create_link(t['conference-url'], t['conference'])
             if "institute" in t:
