@@ -450,7 +450,7 @@ class yamlToTeX:
             tex += r"\item "
             if "title" in t:
                 tit = t['title'].replace("_", "\\_")
-                tex += f"``{tit}\""
+                tex += f"``{tit}\", "
             if "conference" in t:
                 tex += self.create_link(t['conference-url'], t['conference'])
             if "institute" in t:
