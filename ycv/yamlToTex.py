@@ -273,17 +273,24 @@ class yamlToTeX:
             if p['to-year'] is None:
                 p['to-year'] = r"{\itshape current}"
             pos_text += fr"\item {{\bfseries {p['position']}}} \hfill {p['from-year']}--{p['to-year']}\\" + "\n"
-            pos_text += self.create_link(p['department-website'], p['department'])
+            if p["department"] is not None:
+                pos_text += self.create_link(p['department-website'], p['department'])
             pos_text += self.create_link(p['institute-website'], p['institute'], False) + r"\\" + "\n"
-            pos_text += fr"{p['institute-address']}\\" + "\n"
-            if p["mentors"] is not None:
-                pos_text += r"{\itshape Mentors}: "
-                for idx, mentor in enumerate(p["mentors"]):
-                    m = p["mentors"][mentor]
-                    if idx < len(p['mentors']) - 1:
-                        pos_text += self.create_link(m['website'], m['name'])
-                    else:
-                        pos_text += self.create_link(m['website'], m['name'], False) + "\n\n"
+            pos_text += fr"{p['institute-address']}"
+            if "mentors" in p:
+                if p["mentors"] is not None:
+                    pos_text += r"\\" + "\n"
+                    pos_text += r"{\itshape Mentors}: "
+                    for idx, mentor in enumerate(p["mentors"]):
+                        m = p["mentors"][mentor]
+                        if idx < len(p['mentors']) - 1:
+                            pos_text += self.create_link(m['website'], m['name'])
+                        else:
+                            pos_text += self.create_link(m['website'], m['name'], False) + "\n\n"
+                else:
+                    pos_text += "\n\n"
+            else:
+                pos_text += "\n\n"
         pos_text += "\\end{itemize}\n"
         return pos_text
 
