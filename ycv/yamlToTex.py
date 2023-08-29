@@ -455,6 +455,8 @@ class yamlToTeX:
                     "from-year": year})
             date = self.get_duration_from_dict(t)
             tex += r"\item "
+            if "invited" in t:
+                tex += r"{\bfseries (Invited)} "
             if "title" in t:
                 tit = t['title'].replace("_", "\\_")
                 tex += f"``{tit}\", "
