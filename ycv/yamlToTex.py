@@ -261,7 +261,8 @@ class yamlToTeX:
                                       "achievements": self.create_achievements_for_cv,
                                       "visits": self.create_visits_for_cv,
                                       "teaching": self.create_teaching_for_cv,
-                                      "refereeing": self.create_refereeing_for_cv}
+                                      "refereeing": self.create_refereeing_for_cv,
+                                      "meetings": self.create_meetings_for_cv}
         return cv_section_generators_dict[sec]
 
     def create_positions_for_cv(self):
@@ -399,7 +400,7 @@ class yamlToTeX:
                 p += "\href{" + "https://doi.org/" + d["doi"] + "}{" + d["journal"] + "}" + ", "
                 p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
             p += "(" + d["year"] + "), "
-            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + "\n"
+            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + f", cited by {{\itshape {d['citation_count']}}}" + "\n"
         p += "\\end{enumerate}\n"
         return p
 
@@ -428,13 +429,55 @@ class yamlToTeX:
         return references_text
 
     def create_presentations_for_cv(self):
-        tex = "\\" + self.cv_section + self.cv_section_number + "{Conferences, seminars \& workshops}\n"
+        tex = "\\" + self.cv_section + self.cv_section_number + "{Presentations}\n"
         for presentation in self.cv["presentations"]:
             title = self.cv["presentations"][presentation]["title"]
             tex += f"\\sub{self.cv_section}" + self.cv_section_number + f"{{{title}}}\n"
             tex += self.create_list_of_talks_body(self.cv["presentations"][presentation]["file"])
         return tex
 
+    def create_meetings_for_cv(self):
+        tex = "\\" + self.cv_section + self.cv_section_number + "{" + self.cv['meetings']['title'] + "}\n"
+        tex += self.create_list_of_meetings(self.cv["meetings"]["file"])
+        return tex
+
+    def create_list_of_meetings(self, list_of_files):
+        meetins_dict = {}
+        for filename in list_of_files:
+            meetins_dict.update(self.get_data_from_yaml_file(filename))
+        sorted_meetings_dict_by_date = sorted(
+            meetins_dict.items(),
+            key=lambda x: datetime.datetime.strptime(
+                f"{x[1]['from-year']}-{x[1]['from-month']}-{x[1]['from-date']:2d}",
+                "%Y-%B-%d"),
+            reverse=True)
+        converted_dict = dict(sorted_meetings_dict_by_date)
+        tex = "\\begin{enumerate}\n"
+        for talk in converted_dict:
+            t = converted_dict[talk]
+            if "date" in t:
+                d = datetime.date.fromisoformat(f"{t['date']}")
+                day = d.strftime("%d")
+                month = d.strftime("%B")
+                year = d.strftime("%Y")
+                t.update({
+                    "from-date": day,
+                    "to-date": day,
+                    "from-month": month,
+                    "to-month": month,
+                    "to-year": year,
+                    "from-year": year})
+            date = self.get_duration_from_dict(t)
+            tex += r"\item "
+            if "conference" in t:
+                tex += self.create_link(t['conference-url'], t['conference'])
+            if "institute" in t:
+                tex += self.create_link(t['institute-url'], t['institute'])
+            tex += f"{t['city']}, {t['country']}, " + "\n"
+            tex += date
+        tex += "\\end{enumerate}\n"
+        return tex
+    
     def create_list_of_talks_body(self, talks_file):
         self.talks_file = talks_file
         self.talks = self.get_data_from_yaml_file(talks_file)

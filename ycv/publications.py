@@ -5,6 +5,8 @@ from bibtexparser.customization import author, convert_to_unicode
 import yaml
 import argparse
 import os
+import urllib.request
+import json
 
 def format_authors(list_of_authors, special_author):
     authors = ""
@@ -35,6 +37,15 @@ def format_entries(entries_dict, special_author):
             entries_dict[k]["author"] = format_authors(
                 entries_dict[k]["author"], special_author)
 
+
+def get_citation_from_inspirehep_using_arxiv_no(arxiv_no):
+    with urllib.request.urlopen(
+            f"https://inspirehep.net/api/arxiv/{arxiv_no}") as url:
+        citation = json.loads(
+            url.read().decode())['metadata']['citation_count']
+    return citation
+
+
 def get_publication_dict_from_bib(bibfile, special_author):
     bib_file = open(bibfile, "r")
     parser = BibTexParser()
@@ -43,12 +54,16 @@ def get_publication_dict_from_bib(bibfile, special_author):
     bib_file.close()
     entries_dict = bib_database.entries_dict
     format_entries(entries_dict, special_author)
+    for k in entries_dict:
+        citations = get_citation_from_inspirehep_using_arxiv_no(
+            entries_dict[k]['eprint'])
+        entries_dict[k].update({"citation_count": citations})
     return entries_dict
 
 def get_publication_list_from_dict(pub_dict):
     publist = "\\begin{enumerate}\n"
     for k in pub_dict:
-        d = data[k]
+        d = pub_dict[k]
         if "collaboration" in d:
             d["author"] = d["collaboration"]
         p = "\\item "
@@ -58,4 +73,5 @@ def get_publication_list_from_dict(pub_dict):
             p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
         p += "(" + d["year"] + "), "
         p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + ", "
+        p += f"cited by {{\\itshape {d['citations_count']}}}"
         publist += "\\end{enumerate}\n"
