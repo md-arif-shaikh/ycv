@@ -384,8 +384,9 @@ class yamlToTeX:
             if self.cv["publications"]["directory"] is not None:
                 bibfile = self.cv["publications"]["directory"] + bibfile
             pub_dict = get_publication_dict_from_bib(bibfile, special_author=self.authinfo["bib-name"])
-            publist += fr"\subsubsection*{{{subtitle_dict[bib]}}}" + "\n"
-            publist += self.create_list_for_tex_from_dict(pub_dict)
+            if pub_dict:
+                publist += fr"\subsubsection*{{{subtitle_dict[bib]}}}" + "\n"
+                publist += self.create_list_for_tex_from_dict(pub_dict)
         return publist
 
     def create_list_for_tex_from_dict(self, data):
