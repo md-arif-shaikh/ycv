@@ -7,6 +7,8 @@ import argparse
 import os
 import urllib.request
 import json
+import requests
+from urllib.parse import urlencode, quote_plus
 
 def format_authors(list_of_authors, special_author):
     authors = ""
@@ -45,8 +47,16 @@ def get_citation_from_inspirehep_using_arxiv_no(arxiv_no):
             url.read().decode())['metadata']['citation_count']
     return citation
 
+def get_citation_from_nasa_ads_using_arxiv_no(arxiv_no, token):
+    query = {"q": f"identifier:arXiv:{arxiv_no}",
+             "fl": "citation_count"}
+    encoded_query = urlencode(query)
+    results = requests.get(
+        "https://api.adsabs.harvard.edu/v1/search/query?{}".format(encoded_query), \
+        headers={'Authorization': 'Bearer ' + token})
+    return results.json()["response"]["docs"][0]["citation_count"]
 
-def get_publication_dict_from_bib(bibfile, special_author):
+def get_publication_dict_from_bib(bibfile, special_author, token=None):
     bib_file = open(bibfile, "r")
     parser = BibTexParser()
     parser.customization = customizations
@@ -55,12 +65,16 @@ def get_publication_dict_from_bib(bibfile, special_author):
     entries_dict = bib_database.entries_dict
     format_entries(entries_dict, special_author)
     for k in entries_dict:
-        citations = get_citation_from_inspirehep_using_arxiv_no(
+        citations_inspirehep = get_citation_from_inspirehep_using_arxiv_no(
             entries_dict[k]['eprint'])
-        entries_dict[k].update({"citation_count": citations})
+        entries_dict[k].update({"citation_count_inspirehep": citations_inspirehep})
+        if token is not None:
+            citations_nasaads = get_citation_from_nasa_ads_using_arxiv_no(
+                entries_dict[k]['eprint'], token)
+            entries_dict[k].update({"citation_count_nasaads": citations_nasaads})
     return entries_dict
 
-def get_publication_list_from_dict(pub_dict):
+def get_publication_list_from_dict(pub_dict, token=None):
     publist = "\\begin{enumerate}\n"
     for k in pub_dict:
         d = pub_dict[k]
@@ -73,5 +87,7 @@ def get_publication_list_from_dict(pub_dict):
             p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
         p += "(" + d["year"] + "), "
         p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + ", "
-        p += f"cited by {{\\itshape {d['citations_count']}}}"
+        p += f"cited by {{\\itshape {d['citations_count_inspirehep']}}} (iNSPIRE HEP)"
+        if token is not None:
+            p += f" {{\\itshape {d['citations_count_nasaads']}}} (NASA/ADS)"
         publist += "\\end{enumerate}\n"

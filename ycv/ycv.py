@@ -24,19 +24,24 @@ def build_materials_cli():
         action="store_true",
         help="clean tex files",
     )
-    
+    parser.add_argument(
+        "-nasa_ads_token",
+        type=str,
+        default=None)
+
     args = parser.parse_args()
     args.y = dict(args.y)
-    build_materials(args.j, args.y, args.clean_tex)
-    
+    build_materials(args.j, args.y, args.clean_tex, args.nasa_ads_token)
 
-def build_materials(job_name, yaml_files_dict, clean_tex=False):
+
+def build_materials(job_name, yaml_files_dict, clean_tex=False, token=None):
     if not os.path.exists(job_name):
         os.mkdir(job_name)
 
     yt = yamlToTeX(authinfo_file="authinfo.yaml",
                    style_file="style.yaml",
-                   job=job_name)
+                   job=job_name,
+                   nasa_ads_token=token)
     doc_dict = {"cv": yt.create_cv,
                 "research_plan": yt.create_research_plan,
                 "publications": yt.create_list_of_publications}

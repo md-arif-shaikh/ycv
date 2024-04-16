@@ -9,7 +9,7 @@ class yamlToTeX:
     """Module for building materials for job applications."""
 
     def __init__(self, authinfo_file="authinfo.yaml", style_file="style.yaml",
-                 job=None):
+                 job=None, nasa_ads_token=None):
         """Init with yaml files for author info and styles.
 
         Parameters
@@ -39,6 +39,7 @@ class yamlToTeX:
                 self.create_style_file()
         self.style = self.get_data_from_yaml_file(self.style_file)
         self.header_style = self.style["header"]
+        self.nasa_ads_token = nasa_ads_token
 
     def create_authinfo_file(self):
         entries = ["Name",
@@ -383,7 +384,8 @@ class yamlToTeX:
             bibfile = bib_dict[bib]
             if self.cv["publications"]["directory"] is not None:
                 bibfile = self.cv["publications"]["directory"] + bibfile
-            pub_dict = get_publication_dict_from_bib(bibfile, special_author=self.authinfo["bib-name"])
+            pub_dict = get_publication_dict_from_bib(bibfile, special_author=self.authinfo["bib-name"],
+                                                     token=self.nasa_ads_token)
             if pub_dict:
                 publist += fr"\subsubsection*{{{subtitle_dict[bib]}}}" + "\n"
                 publist += self.create_list_for_tex_from_dict(pub_dict)
@@ -401,7 +403,7 @@ class yamlToTeX:
                 p += "\href{" + "https://doi.org/" + d["doi"] + "}{" + d["journal"] + "}" + ", "
                 p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
             p += "(" + d["year"] + "), "
-            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + f", cited by {{\itshape {d['citation_count']}}}" + "\n"
+            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + f", cited by {{\itshape {d['citation_count_inspirehep']}}} (iNSPIRE HEP)" + f" {{\itshape {d['citation_count_nasaads']}}} (NASA/ADS)" if self.nasa_ads_token is not None else "" + "\n"
         p += "\\end{enumerate}\n"
         return p
 
