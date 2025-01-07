@@ -54,7 +54,10 @@ def get_citation_from_nasa_ads_using_arxiv_no(arxiv_no, token):
     results = requests.get(
         "https://api.adsabs.harvard.edu/v1/search/query?{}".format(encoded_query), \
         headers={'Authorization': 'Bearer ' + token})
-    return results.json()["response"]["docs"][0]["citation_count"]
+    if len(results.json()["response"]["docs"]) > 0:
+        return results.json()["response"]["docs"][0]["citation_count"]
+    else:
+        0
 
 def get_publication_dict_from_bib(bibfile, special_author, token=None):
     bib_file = open(bibfile, "r")
@@ -87,7 +90,7 @@ def get_publication_list_from_dict(pub_dict, token=None):
             p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
         p += "(" + d["year"] + "), "
         p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + ", "
-        p += f"cited by {{\\itshape {d['citations_count_inspirehep']}}} (iNSPIRE HEP)"
-        if token is not None:
-            p += f" {{\\itshape {d['citations_count_nasaads']}}} (NASA/ADS)"
+        p += f"cited by {{\\itshape {d['citations_count_inspirehep']}}} (INSPIRE HEP)"
+        #if token is not None:
+        #    p += f" {{\\itshape {d['citations_count_nasaads']}}} (NASA/ADS)"
         publist += "\\end{enumerate}\n"
