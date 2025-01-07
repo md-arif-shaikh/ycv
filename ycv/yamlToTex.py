@@ -403,7 +403,7 @@ class yamlToTeX:
                 p += "\href{" + "https://doi.org/" + d["doi"] + "}{" + d["journal"] + "}" + ", "
                 p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
             p += "(" + d["year"] + "), "
-            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + f", cited by {{\itshape {d['citation_count_inspirehep']}}} (iNSPIRE HEP)" + f" {{\itshape {d['citation_count_nasaads']}}} (NASA/ADS)" if self.nasa_ads_token is not None else "" + "\n"
+            p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + f", cited by {{\itshape {d['citation_count_inspirehep']}}} (INSPIRE HEP)" + "\n" #+ f" {{\itshape {d['citation_count_nasaads']}}} (NASA/ADS)" if self.nasa_ads_token is not None else "" + "\n"
         p += "\\end{enumerate}\n"
         return p
 
