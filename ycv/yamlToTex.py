@@ -9,7 +9,7 @@ class yamlToTeX:
     """Module for building materials for job applications."""
 
     def __init__(self, authinfo_file="authinfo.yaml", style_file="style.yaml",
-                 job=None, nasa_ads_token=None):
+                 job=None, compile_tex=True, nasa_ads_token=None):
         """Init with yaml files for author info and styles.
 
         Parameters
@@ -24,6 +24,7 @@ class yamlToTeX:
         self.authinfo_file = authinfo_file
         self.style_file = style_file
         self.job = job
+        self.compile = compile_tex
         if not os.path.exists(self.authinfo_file):
             print("Can not find `authinfo.yaml` file in the current directory.\n"
                   "This file is required to create appropriate headers.\n")
@@ -190,7 +191,8 @@ class yamlToTeX:
         if self.job is not None:
             current_dir = os.getcwd()
             os.chdir(self.job)
-        os.system(f"pdflatex -interaction=nonstopmode -halt-on-error {tex_file}")
+        if self.compile:
+            os.system(f"pdflatex -interaction=nonstopmode -halt-on-error {tex_file}")
         if self.job is not None:
             os.chdir(current_dir)
 
@@ -229,7 +231,8 @@ class yamlToTeX:
         if self.job is not None:
             current_dir = os.getcwd()
             os.chdir(self.job)
-        os.system(f"pdflatex -interaction=nonstopmode -halt-on-error {tex_file}")
+        if self.compile:
+            os.system(f"pdflatex -interaction=nonstopmode -halt-on-error {tex_file}")
         if self.job is not None:
             os.chdir(current_dir)
 
@@ -368,7 +371,8 @@ class yamlToTeX:
         if self.job is not None:
             current_dir = os.getcwd()
             os.chdir(self.job)
-        os.system(f"pdflatex -interaction=nonstopmode -halt-on-error {tex_file}")
+        if self.compile:
+            os.system(f"pdflatex -interaction=nonstopmode -halt-on-error {tex_file}")
         if self.job is not None:
             os.chdir(current_dir)
 

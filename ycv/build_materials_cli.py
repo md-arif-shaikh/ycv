@@ -20,6 +20,11 @@ def main():
         type=lambda kv: kv.split(":"),
     )
     parser.add_argument(
+        "-compile_tex",
+        action="store_true",
+        help="compile tex files",
+    )
+    parser.add_argument(
         "-clean_tex",
         action="store_true",
         help="clean tex files",
@@ -31,16 +36,17 @@ def main():
 
     args = parser.parse_args()
     args.y = dict(args.y)
-    build_materials(args.j, args.y, args.clean_tex, args.nasa_ads_token)
+    build_materials(args.j, args.y, args.compile_tex, args.clean_tex, args.nasa_ads_token)
 
 
-def build_materials(job_name, yaml_files_dict, clean_tex=False, token=None):
+def build_materials(job_name, yaml_files_dict, compile_tex=True, clean_tex=False, token=None):
     if not os.path.exists(job_name):
         os.mkdir(job_name)
 
     yt = yamlToTeX(authinfo_file="authinfo.yaml",
                    style_file="style.yaml",
                    job=job_name,
+                   compile_tex=compile_tex,
                    nasa_ads_token=token)
     doc_dict = {"cv": yt.create_cv,
                 "research_plan": yt.create_research_plan,
