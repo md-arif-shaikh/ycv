@@ -80,10 +80,10 @@ publications:
   directory:
   short-author:
     title: Short author
-    reviewed: publications.bib
+    bibfile: short_author.bib
   collaboration:
     title: Collaboration
-    reviewed: lvk.bib
+    bibfile: lvk.bib
 
 presentations:
   talks:

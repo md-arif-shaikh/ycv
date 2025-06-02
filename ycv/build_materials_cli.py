@@ -4,7 +4,7 @@ import argparse
 from .yamlToTex import cleanup_tex, yamlToTeX
 
 
-def build_materials_cli():
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-j",

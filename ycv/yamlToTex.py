@@ -115,6 +115,7 @@ class yamlToTeX:
         preamble = "\\documentclass[10pt]{article}\n"
         preamble += "\\usepackage[margin=0.8in]{geometry}\n"
         preamble += "\\usepackage[dvipsnames, usenames]{xcolor}\n"
+        preamble += "\\usepackage{etaremune}\n"
         preamble += "\\definecolor{linkcolor}{rgb}{0.0,0.3,0.5}\n"
         hyperref_colors = {}
         for c in ["linkcolor", "citecolor", "filecolor", "urlcolor"]:
@@ -360,7 +361,6 @@ class yamlToTeX:
         for sec in pubsections:
             if sec == "directory":
                 continue
-            bib_dict = pubsections[sec]
             pub_text += self.create_list_of_publications_body(bib_dict)
         tex.write(pub_text)
         tex.write("\\end{document}\n")
@@ -374,25 +374,18 @@ class yamlToTeX:
 
     def create_list_of_publications_body(self, bib_dict):
         """Create list of publications in TeX format."""
-        bibtitle = bib_dict["title"]
-        publist = f"\\subsection*{{{bibtitle}}}\n"
-        subtitle_dict = {"reviewed": "Peer reviewed publications",
-                         "preprints": "Preprints"}
-        for bib in bib_dict:
-            if bib == "title":
-                continue
-            bibfile = bib_dict[bib]
-            if self.cv["publications"]["directory"] is not None:
-                bibfile = self.cv["publications"]["directory"] + bibfile
-            pub_dict = get_publication_dict_from_bib(bibfile, special_author=self.authinfo["bib-name"],
-                                                     token=self.nasa_ads_token)
-            if pub_dict:
-                publist += fr"\subsubsection*{{{subtitle_dict[bib]}}}" + "\n"
-                publist += self.create_list_for_tex_from_dict(pub_dict)
+        title = bib_dict["title"]
+        bibfile = bib_dict["bibfile"]
+        if self.cv["publications"]["directory"] is not None:
+            bibfile = self.cv["publications"]["directory"] + bibfile
+        pub_dict = get_publication_dict_from_bib(bibfile, special_author=self.authinfo["bib-name"],
+                                                 token=self.nasa_ads_token)
+        publist = f"\\subsection*{{{title}}}\n"
+        publist += self.create_list_for_tex_from_dict(pub_dict)
         return publist
 
     def create_list_for_tex_from_dict(self, data):
-        p = "\\begin{enumerate}\n"
+        p = "\\begin{etaremune}\n"
         for k in data.keys():
             d = data[k]
             if "collaboration" in d:
@@ -404,7 +397,7 @@ class yamlToTeX:
                 p += "{\\bfseries " + d["volume"] + "}" + ", " + d["pages"] + ", "
             p += "(" + d["year"] + "), "
             p += "\href{" + "https://arxiv.org/abs/" + d["eprint"] + "}{arXiv:" + d["eprint"] + " [" + d["primaryclass"] +"]}" + f", cited by {{\itshape {d['citation_count_inspirehep']}}} (INSPIRE HEP)" + "\n" #+ f" {{\itshape {d['citation_count_nasaads']}}} (NASA/ADS)" if self.nasa_ads_token is not None else "" + "\n"
-        p += "\\end{enumerate}\n"
+        p += "\\end{etaremune}\n"
         return p
 
     def create_list_of_references_for_cv(self):
